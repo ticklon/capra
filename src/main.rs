@@ -5,9 +5,30 @@ use tao::{
     window::WindowBuilder,
 };
 use wry::{WebViewBuilder, WebContext};
+use muda::{Menu, Submenu, PredefinedMenuItem};
 
 fn main() -> wry::Result<()> {
     let event_loop = EventLoop::new();
+
+    // 0. メニューバーの設定 (mudaを使用)
+    let menu = Menu::new();
+    
+    let file_menu = Submenu::new("File", true);
+    let _ = file_menu.append(&PredefinedMenuItem::quit(None));
+    
+    let edit_menu = Submenu::new("Edit", true);
+    let _ = edit_menu.append(&PredefinedMenuItem::cut(None));
+    let _ = edit_menu.append(&PredefinedMenuItem::copy(None));
+    let _ = edit_menu.append(&PredefinedMenuItem::paste(None));
+    let _ = edit_menu.append(&PredefinedMenuItem::select_all(None));
+
+    let _ = menu.append(&file_menu);
+    let _ = menu.append(&edit_menu);
+
+    #[cfg(target_os = "macos")]
+    {
+        menu.init_for_nsapp();
+    }
 
     // 1. データディレクトリ設定
     let mut data_dir = dirs::config_dir().unwrap_or_else(|| std::path::PathBuf::from("./"));
