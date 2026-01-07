@@ -1,6 +1,6 @@
 [package]
 name = "capra"
-version = "0.1.2"
+version = "1.0.0"
 edition = "2024"
 authors = ["Ticklon"]
 description = "A lightweight browser dedicated to playing YouTube in the background."
@@ -16,6 +16,6 @@ muda = "0.17"
 name = "Capra"
 identifier = "com.user.capra"
 icon = ["assets/icons.icns"]
-version = "0.1.2"
+version = "1.0.0"
 copyright = "Copyright 2026"
 short_description = "The Background Grazer for Terminal Users."
