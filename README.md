@@ -46,17 +46,45 @@ Goats (*Capra*) are known to climb steep mountains (complex development environm
 ## 🚀 Installation & Usage / インストールと使い方
 
 ### Prerequisites / 事前準備
-*   Rust (latest stable) installed via [rustup](https://rustup.rs/).
-*   macOS (currently optimized for macOS).
+*   **macOS** (Optimized for macOS)
+*   **Rust**: If not installed, get it from [rustup.rs](https://rustup.rs/).
+    *   Rustが未インストールの場合は [rustup.rs](https://rustup.rs/) からインストールしてください。
 
-### Build & Run / 実行方法
+### Option 1: Install with Cargo (Recommended for CLI users) / Cargoでインストール
+
+If you have Rust installed, you can install CAPRA directly.
+Rust環境がある方は、以下のコマンドで直接インストールできます。
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/bgm-browser.git
-cd bgm-browser
+cargo install --git https://github.com/ticklon/capra.git
+```
 
-# Run in release mode
+Run from anywhere:
+インストール後はターミナルから `capra` で起動できます:
+```bash
+capra
+```
+
+### Option 2: Build as macOS App / macOSアプリとしてビルド
+
+If you want to create a standalone `Capra.app`:
+スタンドアロンの `.app` 形式でビルドする場合：
+
+```bash
+# Install cargo-bundle if you haven't
+cargo install cargo-bundle
+
+# Build the bundle
+cargo bundle --release
+```
+The output will be in `target/release/bundle/osx/Capra.app`. You can move it to your `/Applications` folder.
+ビルドされたアプリは `target/release/bundle/osx/Capra.app` に出力されます。`/Applications` フォルダに移動して使用してください。
+
+### Option 3: Build from Source / ソースから直接実行
+
+```bash
+git clone https://github.com/ticklon/capra.git
+cd capra
 cargo run --release
 ```
 
