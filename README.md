@@ -8,6 +8,14 @@
 
 **CAPRA** is a lightweight, distraction-free web browser built with Rust, specifically designed for playing YouTube videos in the background while you work.
 
+![sample](https://github.com/user-attachments/assets/1a803f98-22d7-40ee-8eb5-7a4ba98b4291)
+
+**Use Case:** Coding with WezTerm (transparent background) + Capra.
+
+**使用例:** 背景透過したWezTermの裏でCapraを動作させている様子。
+
+<small>Video Source: [【Playlist】クセになる51曲 3時間](https://youtu.be/rCStA4cNrVM) by zukisuzuki BGM</small>
+
 ## 🐐 Concept & Story
 
 **The Background Grazer.**
