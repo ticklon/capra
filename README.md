@@ -6,7 +6,8 @@
 >
 > 「あなたのターミナルの裏庭で、静かに音を食む。」
 
-**CAPRA** is a lightweight, distraction-free web browser built with Rust, specifically designed for playing YouTube videos in the background while you work.
+**CAPRA** is a lightweight, distraction-free web browser built with Rust, 
+specifically designed for playing YouTube videos in the background while you work.
 
 ![sample](https://github.com/user-attachments/assets/1a803f98-22d7-40ee-8eb5-7a4ba98b4291)
 
@@ -28,31 +29,35 @@ Goats (*Capra*) are known to climb steep mountains (complex development environm
 
 **背景の放牧者。**
 
-山羊（*Capra*）は、険しい山（複雑な開発環境）でも平気で登り、雑草（広告やノイズ）を食べて栄養にします。
+山羊（*Capra*）は、険しい山（複雑な開発環境）でも平気で登り、雑草を食べて栄養にします。
 
-**CAPRA** は、あなたの開発環境の「裏側（Background）」に常駐し、邪魔なUIを噛み砕いて、純粋な音楽と映像だけを届けます。
+**CAPRA** は、あなたの開発環境の「裏側（Background）」に常駐し、UIを噛み砕いて、純粋な音楽と映像だけを届けます。
 
 ## ✨ Features / 特徴
 
 *   **Dedicated to YouTube**: Opens YouTube automatically on launch.
-    *   **YouTube専用設計**: 起動と同時にYouTubeを開きます。
+*   **YouTube専用設計**: 起動と同時にYouTubeを開きます。
+
 *   **BGM Mode (Distraction-Free)**: Press **`T`** to toggle "BGM Mode". This hides comments, sidebars, and headers, leaving only the video player in full screen.
-    *   **BGMモード**: **`T`** キーを押すと、動画以外の要素（ヘッダー、サイドバー、コメント欄など）を全て非表示にします。
+*   **BGMモード**: **`T`** キーを押すと、動画以外の要素（ヘッダー、サイドバー、コメント欄など）を全て非表示にします。
+
 *   **MacOS Native Shortcuts**: Supports `Cmd+Q` (Quit), `Cmd+W` (Close), `Cmd+C/V` (Copy/Paste), etc.
-    *   **Mac標準ショートカット対応**: 終了やコピペなど、OS標準のキー操作に対応しています。
+*   **Mac標準ショートカット対応**: 終了やコピペなど、OS標準のキー操作に対応しています。
+
 *   **Persistent Session**: Log in once, and your session is saved for next time.
-    *   **ログイン状態の保持**: ログイン情報は保存されるため、毎回ログインし直す必要はありません。
+*   **ログイン状態の保持**: ログイン情報は保存されるため、毎回ログインし直す必要はありません。
 
 ## 🚀 Installation & Usage / インストールと使い方
 
 ### Prerequisites / 事前準備
 *   **macOS** (Optimized for macOS)
 *   **Rust**: If not installed, get it from [rustup.rs](https://rustup.rs/).
-    *   Rustが未インストールの場合は [rustup.rs](https://rustup.rs/) からインストールしてください。
+*   Rustが未インストールの場合は [rustup.rs](https://rustup.rs/) からインストールしてください。
 
 ### Option 1: Install with Cargo (Recommended for CLI users) / Cargoでインストール
 
 If you have Rust installed, you can install CAPRA directly.
+
 Rust環境がある方は、以下のコマンドで直接インストールできます。
 
 ```bash
@@ -68,6 +73,7 @@ capra
 ### Option 2: Build as macOS App / macOSアプリとしてビルド
 
 If you want to create a standalone `Capra.app`:
+
 スタンドアロンの `.app` 形式でビルドする場合：
 
 ```bash
@@ -78,6 +84,7 @@ cargo install cargo-bundle
 cargo bundle --release
 ```
 The output will be in `target/release/bundle/osx/Capra.app`. You can move it to your `/Applications` folder.
+
 ビルドされたアプリは `target/release/bundle/osx/Capra.app` に出力されます。`/Applications` フォルダに移動して使用してください。
 
 ### Option 3: Build from Source / ソースから直接実行
