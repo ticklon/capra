@@ -2,17 +2,20 @@
 name = "bgm-browser"
 version = "0.1.0"
 edition = "2024"
+authors = ["Ticklon"]
+description = "A lightweight browser dedicated to playing YouTube in the background."
+license = "MIT"
 
 [dependencies]
 tao = "0.30"
 wry = "0.46"
 dirs = "5.0"
-muda = "0.17.1"
+muda = "0.17"
 
 [package.metadata.bundle]
 name = "Capra"
 identifier = "com.user.capra"
 icon = ["assets/icons.icns"]
-version = "1.0.0"
+version = "1.0.1"
 copyright = "Copyright 2026"
 short_description = "The Background Grazer for Terminal Users."

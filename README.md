@@ -1,0 +1,79 @@
+# CAPRA (カプラ)
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
+> **"The Background Grazer"**
+>
+> 「あなたのターミナルの裏庭で、静かに音を食む。」
+
+**CAPRA** is a lightweight, distraction-free web browser built with Rust, specifically designed for playing YouTube videos in the background while you work.
+
+## 🐐 Concept & Story
+
+**The Background Grazer.**
+
+Goats (*Capra*) are known to climb steep mountains (complex development environments) with ease and graze on weeds (distractions/ads) for nutrition.
+
+**CAPRA** resides in the "backyard" (background) of your development environment, chewing away the intrusive UI elements and delivering only the pure music and visuals you need.
+
+---
+
+**背景の放牧者。**
+
+山羊（*Capra*）は、険しい山（複雑な開発環境）でも平気で登り、雑草（広告やノイズ）を食べて栄養にします。
+
+**CAPRA** は、あなたの開発環境の「裏側（Background）」に常駐し、邪魔なUIを噛み砕いて、純粋な音楽と映像だけを届けます。
+
+## ✨ Features / 特徴
+
+*   **Dedicated to YouTube**: Opens YouTube automatically on launch.
+    *   **YouTube専用設計**: 起動と同時にYouTubeを開きます。
+*   **BGM Mode (Distraction-Free)**: Press **`T`** to toggle "BGM Mode". This hides comments, sidebars, and headers, leaving only the video player in full screen.
+    *   **BGMモード**: **`T`** キーを押すと、動画以外の要素（ヘッダー、サイドバー、コメント欄など）を全て非表示にします。
+*   **MacOS Native Shortcuts**: Supports `Cmd+Q` (Quit), `Cmd+W` (Close), `Cmd+C/V` (Copy/Paste), etc.
+    *   **Mac標準ショートカット対応**: 終了やコピペなど、OS標準のキー操作に対応しています。
+*   **Persistent Session**: Log in once, and your session is saved for next time.
+    *   **ログイン状態の保持**: ログイン情報は保存されるため、毎回ログインし直す必要はありません。
+
+## 🚀 Installation & Usage / インストールと使い方
+
+### Prerequisites / 事前準備
+*   Rust (latest stable) installed via [rustup](https://rustup.rs/).
+*   macOS (currently optimized for macOS).
+
+### Build & Run / 実行方法
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/bgm-browser.git
+cd bgm-browser
+
+# Run in release mode
+cargo run --release
+```
+
+### Keyboard Shortcuts / ショートカット
+
+| Key / キー | Action / 動作 |
+|:---|:---|
+| **`T`** | Toggle BGM Mode (Show/Hide UI) / BGMモード切替 |
+| `Cmd + Q` | Quit Application / アプリ終了 |
+| `Cmd + W` | Close Window / ウィンドウを閉じる |
+| `Cmd + R` | Reload / 再読み込み (Standard Browser Shortcut) |
+
+## 🛠 Tech Stack / 技術スタック
+
+*   [Rust](https://www.rust-lang.org/)
+*   [Tao](https://github.com/tauri-apps/tao) - Cross-platform window creation library.
+*   [Wry](https://github.com/tauri-apps/wry) - Cross-platform WebView rendering library.
+*   [Muda](https://github.com/tauri-apps/muda) - Menu Bar library.
+
+## ⚠️ Disclaimer / 免責事項
+
+This application uses DOM manipulation to hide YouTube UI elements. Since it depends on YouTube's site structure, "BGM Mode" may break if YouTube updates their layout.
+
+本アプリはYouTubeのHTML構造（DOM）を直接操作してUIを非表示にしています。YouTube側の仕様変更により、BGMモードが正常に動作しなくなる可能性があります。
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

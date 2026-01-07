@@ -10,7 +10,7 @@ use muda::{Menu, Submenu, PredefinedMenuItem};
 fn main() -> wry::Result<()> {
     let event_loop = EventLoop::new();
 
-    // 0. メニューバーの設定 (mudaを使用)
+    // 0. Menu bar setup (using muda)
     let menu = Menu::new();
     
     let file_menu = Submenu::new("File", true);
@@ -30,7 +30,7 @@ fn main() -> wry::Result<()> {
         menu.init_for_nsapp();
     }
 
-    // 1. データディレクトリ設定
+    // 1. Data directory setup
     let mut data_dir = dirs::config_dir().unwrap_or_else(|| std::path::PathBuf::from("./"));
     data_dir.push("bgm-browser");
     if !data_dir.exists() {
@@ -38,7 +38,7 @@ fn main() -> wry::Result<()> {
     }
     let mut web_context = WebContext::new(Some(data_dir));
 
-    // 2. ウィンドウ設定
+    // 2. Window setup
     let window = WindowBuilder::new()
         .with_title("BGM Browser")
         .with_decorations(false)
@@ -46,54 +46,54 @@ fn main() -> wry::Result<()> {
         .build(&event_loop)
         .unwrap();
 
-    // 3. YouTubeのトップページを指定
+    // 3. Set YouTube homepage URL
     let url = "https://www.youtube.com/".to_string();
 
-    // Safari (macOS) の User Agent
+    // Safari (macOS) User Agent
     let user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
 
-    // 4. スクリプト（ここが長いので注意）
+    // 4. Initialization script (This is large)
     let init_script = r#"
         (function() {
-            // 初期状態は「通常モード(false)」でスタート
+            // Start in "Normal Mode" (false)
             window.isBgmMode = false;
 
             console.log("Started in Normal Mode. Press 'T' to toggle BGM Mode.");
 
-            // キーボードイベント: 't' キーでモード切替
+            // Keyboard event: Toggle mode with 't' key
             window.addEventListener('keydown', (e) => {
-                // 文字入力中は反応させない
+                // Do not react during text input
                 if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.contentEditable !== 'true') {
                     if (e.key === 't' || e.key === 'T') {
                         window.isBgmMode = !window.isBgmMode;
                         console.log("Mode Toggled:", window.isBgmMode ? "BGM Mode" : "Normal Mode");
                         
                         if (!window.isBgmMode) {
-                            // 通常モードへ戻す: CSS削除 & 表示復帰
+                            // Return to Normal Mode: Remove CSS & Restore visibility
                             const style = document.getElementById('force-fullscreen-style');
                             if (style) style.remove();
                             
                             const hidden = document.querySelectorAll('*[style*="display: none"]');
                             hidden.forEach(el => el.style.display = '');
                         } else {
-                            // BGMモードへ: スタイル適用
+                            // Switch to BGM Mode: Apply styles
                             applyStyles();
                         }
                     }
                 }
             });
 
-            // CSS定義
+            // CSS definitions
             const css = `
-                /* 背景を黒に */
+                /* Set background to black */
                 html, body, ytd-app { background: black !important; overflow: hidden !important; }
                 
-                /* UIを非表示 */
+                /* Hide UI elements */
                 ytd-masthead, #masthead-container, #secondary, #below, #comments, #chat, ytd-playlist-panel-renderer {
                     display: none !important;
                 }
                 
-                /* プレイヤーを全画面化・最前面・透明背景 */
+                /* Force player to full screen, top layer, transparent background */
                 #movie_player, .html5-video-player, #player-container-outer, #player-container-inner, #player-container {
                     position: fixed !important;
                     top: 0 !important;
@@ -112,7 +112,7 @@ fn main() -> wry::Result<()> {
                     height: 100% !important;
                     display: block !important;
                 }
-                /* コントロールバー消去 */
+                /* Hide control bar */
                 .ytp-chrome-top, .ytp-gradient-top, .ytp-chrome-bottom { display: none !important; }
             `;
 
@@ -128,23 +128,23 @@ fn main() -> wry::Result<()> {
                 }
             }
 
-            // 監視ループ
+            // Watch loop
             setInterval(() => {
                 applyStyles();
             }, 100);
         })();
-    "#; // ここが閉じタグです
+    "#; // End of initialization script
 
-    // 5. WebViewの構築
+    // 5. Build WebView
     let _webview = WebViewBuilder::with_web_context(&mut web_context)
         .with_url(&url)
         .with_user_agent(user_agent)
         .with_initialization_script(init_script)
         .with_autoplay(true)
-        .with_devtools(true)
+        .with_devtools(cfg!(debug_assertions))
         .build(&window)?;
 
-    // 6. イベントループ
+    // 6. Event loop
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Wait;
         match event {
