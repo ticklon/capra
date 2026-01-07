@@ -1,0 +1,17 @@
+[package]
+name = "bgm-browser"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tao = "0.30"
+wry = "0.46"
+dirs = "5.0"
+
+[package.metadata.bundle]
+name = "Capra"
+identifier = "com.user.capra"
+icon = ["assets/icons.icns"]
+version = "1.0.0"
+copyright = "Copyright 2026"
+short_description = "The Background Grazer for Terminal Users."
