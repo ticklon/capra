@@ -69,12 +69,12 @@ fn main() -> wry::Result<()> {
                         console.log("Mode Toggled:", window.isBgmMode ? "BGM Mode" : "Normal Mode");
                         
                         if (!window.isBgmMode) {
-                            // Return to Normal Mode: Remove CSS & Restore visibility
+                            // Return to Normal Mode: Remove CSS
                             const style = document.getElementById('force-fullscreen-style');
                             if (style) style.remove();
                             
-                            const hidden = document.querySelectorAll('*[style*="display: none"]');
-                            hidden.forEach(el => el.style.display = '');
+                            // Force layout recalculation for YouTube player
+                            window.dispatchEvent(new Event('resize'));
                         } else {
                             // Switch to BGM Mode: Apply styles
                             applyStyles();
