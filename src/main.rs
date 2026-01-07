@@ -135,13 +135,30 @@ fn main() -> wry::Result<()> {
         })();
     "#; // End of initialization script
 
-    // 5. Build WebView
+    // 5. WebViewの構築
     let _webview = WebViewBuilder::with_web_context(&mut web_context)
         .with_url(&url)
         .with_user_agent(user_agent)
         .with_initialization_script(init_script)
         .with_autoplay(true)
         .with_devtools(cfg!(debug_assertions))
+        .with_navigation_handler(|url| {
+            let url_str = url.as_str();
+            // Allow YouTube domains
+            if url_str.contains("youtube.com") || url_str.contains("youtu.be") {
+                return true;
+            }
+            // Allow Google login domains
+            if url_str.contains("accounts.google.com") || url_str.contains("google.com/accounts") || url_str.contains("myaccount.google.com") {
+                return true;
+            }
+            
+            // Block everything else
+            println!("Blocked navigation to: {}", url_str);
+            // Note: Displaying a JS alert here is difficult because this handler is synchronous.
+            // For now, we silently block to ensure security.
+            false
+        })
         .build(&window)?;
 
     // 6. Event loop

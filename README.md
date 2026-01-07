@@ -45,8 +45,9 @@ Goats (*Capra*) are known to climb steep mountains (complex development environm
 *   **Mac標準ショートカット対応**: 終了やコピペなど、OS標準のキー操作に対応しています。
 
 *   **Persistent Session**: Log in once, and your session is saved for next time.
-*   **ログイン状態の保持**: ログイン情報は保存されるため、毎回ログインし直す必要はありません。
-
+    *   **ログイン状態の保持**: ログイン情報は保存されるため、毎回ログインし直す必要はありません。
+*   **Security (Navigation Lock)**: Blocks access to external sites. Only YouTube and Google Login are allowed.
+    *   **セキュリティ（ナビゲーションロック）**: 外部サイトへのアクセスをブロックします。YouTubeとGoogleログインのみ許可されます。
 ## 🚀 Installation & Usage / インストールと使い方
 
 ### Prerequisites / 事前準備
