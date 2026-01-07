@@ -1,5 +1,9 @@
 # CAPRA (カプラ)
 
+**全ての背景透過ターミナル愛好家（ジャンキー）たちへ**
+
+**To all transparent terminal junkies.**
+
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 > **"The Background Grazer"**
