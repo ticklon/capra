@@ -6,8 +6,10 @@ use tao::{
 };
 use wry::{WebViewBuilder, WebContext};
 use muda::{Menu, Submenu, PredefinedMenuItem};
+use anyhow::{Context, Result};
+use url::Url;
 
-fn main() -> wry::Result<()> {
+fn main() -> Result<()> {
     let event_loop = EventLoop::new();
 
     // 0. Menu bar setup (using muda)
@@ -31,10 +33,12 @@ fn main() -> wry::Result<()> {
     }
 
     // 1. Data directory setup
-    let mut data_dir = dirs::config_dir().unwrap_or_else(|| std::path::PathBuf::from("./"));
-    data_dir.push("bgm-browser");
+    let mut data_dir = dirs::config_dir()
+        .ok_or_else(|| anyhow::anyhow!("could not determine config dir"))?;
+    data_dir.push("capra");
     if !data_dir.exists() {
-        fs::create_dir_all(&data_dir).unwrap();
+        fs::create_dir_all(&data_dir)
+            .with_context(|| format!("failed to create data dir {:?}", data_dir))?;
     }
     let mut web_context = WebContext::new(Some(data_dir));
 
@@ -44,7 +48,7 @@ fn main() -> wry::Result<()> {
         .with_decorations(false)
         .with_maximized(true)
         .build(&event_loop)
-        .unwrap();
+        .context("failed to build window")?;
 
     // 3. Set YouTube homepage URL
     let url = "https://www.youtube.com/".to_string();
@@ -52,48 +56,17 @@ fn main() -> wry::Result<()> {
     // Safari (macOS) User Agent
     let user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
 
-    // 4. Initialization script (This is large)
+    // 4. Initialization script
     let init_script = r#"
         (function() {
-            // Start in "Normal Mode" (false)
             window.isBgmMode = false;
-
             console.log("Started in Normal Mode. Press 'T' to toggle BGM Mode.");
 
-            // Keyboard event: Toggle mode with 't' key
-            window.addEventListener('keydown', (e) => {
-                // Do not react during text input
-                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.contentEditable !== 'true') {
-                    if (e.key === 't' || e.key === 'T') {
-                        window.isBgmMode = !window.isBgmMode;
-                        console.log("Mode Toggled:", window.isBgmMode ? "BGM Mode" : "Normal Mode");
-                        
-                        if (!window.isBgmMode) {
-                            // Return to Normal Mode: Remove CSS
-                            const style = document.getElementById('force-fullscreen-style');
-                            if (style) style.remove();
-                            
-                            // Force layout recalculation for YouTube player
-                            window.dispatchEvent(new Event('resize'));
-                        } else {
-                            // Switch to BGM Mode: Apply styles
-                            applyStyles();
-                        }
-                    }
-                }
-            });
-
-            // CSS definitions
             const css = `
-                /* Set background to black */
                 html, body, ytd-app { background: black !important; overflow: hidden !important; }
-                
-                /* Hide UI elements */
                 ytd-masthead, #masthead-container, #secondary, #below, #comments, #chat, ytd-playlist-panel-renderer {
                     display: none !important;
                 }
-                
-                /* Force player to full screen, top layer, transparent background */
                 #movie_player, .html5-video-player, #player-container-outer, #player-container-inner, #player-container {
                     position: fixed !important;
                     top: 0 !important;
@@ -112,14 +85,12 @@ fn main() -> wry::Result<()> {
                     height: 100% !important;
                     display: block !important;
                 }
-                /* Hide control bar */
                 .ytp-chrome-top, .ytp-gradient-top, .ytp-chrome-bottom { display: none !important; }
             `;
 
             function applyStyles() {
                 if (!window.isBgmMode) return;
                 if (!document.head) return;
-
                 if (!document.getElementById('force-fullscreen-style')) {
                     const style = document.createElement('style');
                     style.id = 'force-fullscreen-style';
@@ -128,38 +99,80 @@ fn main() -> wry::Result<()> {
                 }
             }
 
-            // Watch loop
-            setInterval(() => {
-                applyStyles();
-            }, 100);
-        })();
-    "#; // End of initialization script
+            function removeStyles() {
+                const style = document.getElementById('force-fullscreen-style');
+                if (style) style.remove();
+                window.dispatchEvent(new Event('resize'));
+            }
 
-    // 5. WebViewの構築
-    let _webview = WebViewBuilder::with_web_context(&mut web_context)
+            // Keyboard listener
+            document.addEventListener('keydown', (e) => {
+                if (!(e.target instanceof HTMLElement)) return;
+                if (e.target.isContentEditable) return;
+                const tag = e.target.tagName;
+                if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+                if (e.key === 't' || e.key === 'T') {
+                    window.isBgmMode = !window.isBgmMode;
+                    console.log("Mode Toggled:", window.isBgmMode ? "BGM Mode" : "Normal Mode");
+                    if (window.isBgmMode) applyStyles();
+                    else removeStyles();
+                }
+            });
+
+            // MutationObserver to keep styles applied
+            const observer = new MutationObserver(() => {
+                if (window.isBgmMode) applyStyles();
+            });
+            
+            observer.observe(document.documentElement, { 
+                childList: true, 
+                subtree: true, 
+                attributes: true 
+            });
+        })();
+    "#;
+
+    // 5. WebView setup
+    #[allow(unused_variables)]
+    let webview = WebViewBuilder::with_web_context(&mut web_context)
         .with_url(&url)
         .with_user_agent(user_agent)
         .with_initialization_script(init_script)
         .with_autoplay(true)
         .with_devtools(cfg!(debug_assertions))
-        .with_navigation_handler(|url| {
-            let url_str = url.as_str();
-            // Allow YouTube domains
-            if url_str.contains("youtube.com") || url_str.contains("youtu.be") {
-                return true;
+        .with_navigation_handler(|url_string| {
+            // Parse the URL
+            let Ok(url) = Url::parse(&url_string) else {
+                println!("Blocked invalid URL: {}", url_string);
+                return false;
+            };
+
+            // Allow specific schemes
+            match url.scheme() {
+                "data" | "blob" | "about" => return true,
+                _ => {}
             }
-            // Allow Google login domains
-            if url_str.contains("accounts.google.com") || url_str.contains("google.com/accounts") || url_str.contains("myaccount.google.com") {
-                return true;
+
+            // Check host
+            if let Some(host) = url.host_str() {
+                let host = host.to_lowercase();
+                let allowed_suffixes = [
+                    "youtube.com", "youtu.be", "ytimg.com", 
+                    "google.com", "gstatic.com", "googlevideo.com",
+                    "accounts.google.com", "myaccount.google.com"
+                ];
+                
+                if allowed_suffixes.iter().any(|s| host == *s || host.ends_with(&format!(".{}", s))) {
+                    return true;
+                }
             }
             
-            // Block everything else
-            println!("Blocked navigation to: {}", url_str);
-            // Note: Displaying a JS alert here is difficult because this handler is synchronous.
-            // For now, we silently block to ensure security.
+            println!("Blocked navigation to: {}", url_string);
             false
         })
-        .build(&window)?;
+        .build(&window)
+        .context("failed to build webview")?;
 
     // 6. Event loop
     event_loop.run(move |event, _, control_flow| {

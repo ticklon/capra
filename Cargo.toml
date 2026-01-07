@@ -11,6 +11,8 @@ tao = "0.30"
 wry = "0.46"
 dirs = "5.0"
 muda = "0.17"
+anyhow = "1.0.100"
+url = "2.5.8"
 
 [package.metadata.bundle]
 name = "Capra"
